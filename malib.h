@@ -3,4 +3,6 @@
 
 int str_len(char *);
 
+
+
 #endif // MALIB_H

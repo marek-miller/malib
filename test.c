@@ -5,15 +5,18 @@
 static int TEST_RET = 0;
 
 static char *TEST_STR01 = "Hello, malib!";
-
+static char *TEST_STR02 = "Huqmkvello, maioal";
 
 int test_str_len() {
 
 	int ret = 0;
 
-	int sl = str_len(TEST_STR01);
-	if (sl != 13)
+	if (str_len(TEST_STR01) != 13)
 		ret = -1;
+
+	if (str_len(TEST_STR02) != 18)
+		ret = -1;
+
 
 	return ret;
 }

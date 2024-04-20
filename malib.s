@@ -20,7 +20,7 @@ SECTION .bss
 
 SECTION .text
 
-;  Print a null-terminated string to file destriptor.
+; Print a null-terminated string to file destriptor.
 ;
 ; Parameters:
 ;	rdi	- file destriptor, e.g. 
@@ -45,7 +45,7 @@ print_str:
 	pop	rax
 	ret
 
-;  Calculate the length of a null-terminated string.
+; Calculate the length of a null-terminated string.
 ; 
 ; Parameters:
 ; 	rdi	- address of the string
@@ -55,10 +55,10 @@ print_str:
 ;
 str_len:
 	xor	rax, rax
-.loop:
+.count:
 	cmp 	[rdi+rax], byte 0
-	je	.end_loop
+	je	.end_count
 	inc	rax
-	jmp	.loop
-.end_loop:
+	jmp	.count
+.end_count:
 	ret	
