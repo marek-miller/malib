@@ -1,3 +1,5 @@
+default rel
+
 %define	STDIN		0
 %define	STDOUT		1
 %define	STDERR		2
@@ -9,7 +11,7 @@
 %define	SYS_EXIT	60
 
 
-SECTION .date
+SECTION .data
 
 exit_code		db	0
 hello_x64		db	`Hello, x64 world!\n`, 0
@@ -29,6 +31,6 @@ _start:
 
 _exit:
 	mov	rax, SYS_EXIT
-	mov	rdi, exit_code
+	lea	rdi, [exit_code]
 	syscall
 

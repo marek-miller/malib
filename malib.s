@@ -1,3 +1,5 @@
+default rel
+
 global print_str, str_len
 
 
