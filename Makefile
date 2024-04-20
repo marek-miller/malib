@@ -1,4 +1,4 @@
-PROG= malib
+LIBNAME= malib
 
 ASM= nasm
 ASM_FLAGS=	-f elf64 -g -F dwarf -w+all
@@ -6,9 +6,14 @@ ASM_FLAGS=	-f elf64 -g -F dwarf -w+all
 CC= gcc
 CC_FLAGS=	-no-pie -Wall -Wextra
 
-OBJS= main.o
+.PHONY: all clean clean-test build build-test test
 
-.PHONY: all clean test
+all: build build-test
+
+clean: clean-test
+	rm -f *.o *.a
+	rm -f malib-run
+
 
 %.o: %.s
 	${ASM} ${ASM_FLAGS} -o $@ $< 
@@ -16,12 +21,22 @@ OBJS= main.o
 %.o: %.c
 	${CC} ${CC_FLAGS} -o $@ -c $< 
 
-main: main.o
-	ld -o ${PROG} ${OBJS}
+build: malib.o main.o
+	ar cr lib${LIBNAME}.a $<
+	ranlib lib${LIBNAME}.a
+	ld -o malib-run main.o lib${LIBNAME}.a
 
-test:
 
-all: main test
+# Testing
+TEST_DRIVE=	${LIBNAME}-test
+TEST_OBJS=	test.o
 
-clean:
-	rm -f *.o
+build-test: ${TEST_OBJS}
+	${CC} ${CC_FLAGS} -o ${TEST_DRIVE} ${TEST_OBJS} -I./ -L./ -l${LIBNAME} 
+
+test: build-test
+	@./${TEST_DRIVE}
+
+clean-test:
+	rm -f ${TEST_DRIVE}
+

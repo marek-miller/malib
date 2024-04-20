@@ -1,4 +1,6 @@
-malib
+libmalib.a
+malib-run
+malib-test
 
 *.o
 *.d
