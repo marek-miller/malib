@@ -30,10 +30,5 @@ int main(int argc, char **argv)
 	if (test_str_len() < 0) 
 		TEST_RET = -1;
 
-	if (TEST_RET < 0)
-		fprintf(stderr, "FAILED\n");
-	else
-		fprintf(stderr, "OK\n");
-
 	return TEST_RET;
 }

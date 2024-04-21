@@ -1,10 +1,4 @@
-libmalib.a
-malib-run
-malib-test
+.idea/
 
-*.o
-*.d
-
-.idea
-
+build/
 tmp/
