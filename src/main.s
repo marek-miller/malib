@@ -1,24 +1,18 @@
 default rel
 
-%define	STDIN		0
-%define	STDOUT		1
-%define	STDERR		2
+%include "syscalls.inc"
+%include "malib.inc"
 
-%define	EXIT_SUCESS	0
-
-; system calls
-%define SYS_WRITE	1
-%define	SYS_EXIT	60
+global _start
 
 SECTION .data
 
-exit_code		db	0
-hello_x64		db	`Hello, x64 world!\n`, 0
+exit_code		db	EXIT_SUCESS
+hello_x64		db	'Hello, x64 world!', 0xa, 0
 
 SECTION .bss
 
 SECTION .text
-	global _start
 	extern ma_printstr
 
 _start:

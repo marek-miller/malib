@@ -1,16 +1,9 @@
 default rel
 
+%include "syscalls.inc"
+%include "malib.inc"
+
 global ma_printstr, ma_strlen
-
-%define	STDIN		0
-%define	STDOUT		1
-%define	STDERR		2
-
-%define	EXIT_SUCESS	0
-
-; system calls
-%define SYS_WRITE	1
-%define	SYS_EXIT	60
 
 SECTION .data
 
@@ -28,7 +21,6 @@ SECTION .text
 ;
 ; Returns:
 ;	rax	- number of characters written
-;
 ma_printstr:
 	push	rdi
 	mov	rdi, rsi
@@ -50,7 +42,6 @@ ma_printstr:
 ;
 ; Returns:
 ;	rax	- number of characters in the string
-;
 ma_strlen:
 	xor	rax, rax
 	not	rax
