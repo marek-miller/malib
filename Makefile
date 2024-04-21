@@ -16,8 +16,8 @@ EXE	= $(NAME)
 EXE_SRCS= main.s
 EXE_OBJS= main.o
 
-MKDIR	= mkdir
 RM	= rm -f
+MKDIR	= mkdir -p
 RMDIR	= rm -rf
 
 AS	= nasm
