@@ -34,6 +34,17 @@ _exit:
 
 test_strlen:
 
+	; initiate str03
+	lea	rdi, [str03]
+	xor	rcx, rcx
+.set_str:
+	mov	[rdi + rcx], byte 'A'
+	inc	rcx
+	cmp	rcx, str03_len
+	jne	.set_str
+	mov	[rdi + rcx], byte 0
+
+	; check if ma_strlen returns correct length
 %macro case_strlen 2
 	push 	rax
 	lea	rdi, [%1]
@@ -48,16 +59,6 @@ test_strlen:
 
 	case_strlen str01, str01_len
 	case_strlen str02, str02_len
-
-	lea	rdi, [str03]
-	xor	rcx, rcx
-.set_str:
-	mov	[rdi + rcx], byte 'A'
-	inc	rcx
-	cmp	rcx, str03_len
-	jne	.set_str
-	mov	[rdi + rcx], byte 0
-
 	case_strlen str03, str03_len
 
 	ret
