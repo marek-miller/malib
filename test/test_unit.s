@@ -16,6 +16,9 @@ str02_len	equ	$-str02 -1
 
 SECTION .bss
 
+str03_len	equ	1024*1024
+str03		resb	str03_len+1
+
 SECTION .text
 	extern ma_strlen, ma_printstr
 
@@ -45,6 +48,16 @@ test_strlen:
 
 	case_strlen str01, str01_len
 	case_strlen str02, str02_len
+
+	xor	rcx, rcx
+.set_str:
+	mov	[str03 + rcx], byte 'A'
+	inc	rcx
+	cmp	rcx, str03_len
+	jne	.set_str
+	mov	[str03 + rcx], byte 0
+
+	case_strlen str03, str03_len
 
 	ret
 
