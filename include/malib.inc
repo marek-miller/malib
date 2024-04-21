@@ -1,4 +1,4 @@
-%define	EXIT_SUCESS	0
+%define	EXIT_SUCCESS	0
 %define	EXIT_FAILURE	255
 
 %define	STDIN		0

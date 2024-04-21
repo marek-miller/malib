@@ -62,20 +62,36 @@ clean: test-clean
 # Testing
 
 TEST_BUILD	= $(BUILD)/$(TEST)
-TEST_EXE	= test-$(NAME)
-TEST_SRCS	= test.c
-TEST_OBJS	= test.o
+TEST_ASFLAGS	= $(ASFLAGS)
 TEST_CFLAGS	= $(CFLAGS) -g -O0
 TEST_LDFLAGS	= $(LDFLAGS)
 TEST_LDLIBS	= $(LDLIBS) -lm
 
+TEST_SUITE_01		= test_unit
+TEST_SUITE_01_SRCS	= test_unit.s
+TEST_SUITE_01_OBJS	= $(TEST_SUITE_01_SRCS:%.s=$(TEST_BUILD)/%.o)
+
+TEST_SUITE_02		= test_api
+TEST_SUITE_02_SRCS	= test_api.c
+TEST_SUITE_02_OBJS	= $(TEST_SUITE_02_SRCS:%.c=$(TEST_BUILD)/%.o)
+
 .PHONY: test test-clean
 
-test: $(TEST_BUILD)/$(TEST_EXE)
-	@time -p $(TEST_BUILD)/$(TEST_EXE) && echo OK
+test: $(addprefix $(TEST_BUILD)/,$(TEST_SUITE_01) $(TEST_SUITE_02))
+	@echo -n  $(TEST_BUILD)/$(TEST_SUITE_01)": "
+	@$(TEST_BUILD)/$(TEST_SUITE_01) && echo OK || echo FAIL
 
-$(TEST_BUILD)/$(TEST_EXE): $(TEST_BUILD)/$(TEST_OBJS) $(BUILD)/$(LIB)
+	@echo -n  $(TEST_BUILD)/$(TEST_SUITE_02)": "
+	@$(TEST_BUILD)/$(TEST_SUITE_02) && echo OK || echo FAIL
+
+$(TEST_BUILD)/$(TEST_SUITE_01): $(TEST_SUITE_01_OBJS) $(BUILD)/$(LIB)
+	$(LD) $(TEST_LDFLAGS) $^ -o $@
+
+$(TEST_BUILD)/$(TEST_SUITE_02): $(TEST_SUITE_02_OBJS) $(BUILD)/$(LIB)
 	$(CC) $(TEST_LDFLAGS) $^ -o $@ $(TEST_LDLIBS)
+
+$(TEST_BUILD)/%.o: $(TEST)/%.s | $(TEST_BUILD)
+	$(AS) $(TEST_ASFLAGS) $< -o $@
 
 $(TEST_BUILD)/%.o: $(TEST)/%.c | $(TEST_BUILD)
 	$(CC) $(TEST_CFLAGS) -c $< -o $@
@@ -84,4 +100,4 @@ $(TEST_BUILD):
 	$(MKDIR) $@
 
 test-clean:
-	$(RM) $(TEST_BUILD)/*.o
+	$(RMDIR) $(TEST_BUILD)
