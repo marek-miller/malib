@@ -44,7 +44,7 @@ ma_printstr:
 ;	rax	- number of characters in the string
 ma_strlen:
 	xor	rax, rax
-	not	rax
+	dec	rax
 .count:
 	inc	rax
 	cmp 	[rdi+rax], byte 0
