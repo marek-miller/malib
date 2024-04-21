@@ -1,7 +1,6 @@
 default rel
 
-global print_str, str_len
-
+global ma_printstr, ma_strlen
 
 %define	STDIN		0
 %define	STDOUT		1
@@ -13,12 +12,9 @@ global print_str, str_len
 %define SYS_WRITE	1
 %define	SYS_EXIT	60
 
-
 SECTION .data
 
-
 SECTION .bss
-
 
 SECTION .text
 
@@ -33,10 +29,10 @@ SECTION .text
 ; Returns:
 ;	rax	- number of characters written
 ;
-print_str:
+ma_printstr:
 	push	rdi
 	mov	rdi, rsi
-	call	str_len
+	call	ma_strlen
 	pop	rdi
 
 	push	rax
@@ -55,12 +51,11 @@ print_str:
 ; Returns:
 ;	rax	- number of characters in the string
 ;
-str_len:
+ma_strlen:
 	xor	rax, rax
+	not	rax
 .count:
-	cmp 	[rdi+rax], byte 0
-	je	.end_count
 	inc	rax
-	jmp	.count
-.end_count:
+	cmp 	[rdi+rax], byte 0
+	jne	.count
 	ret	

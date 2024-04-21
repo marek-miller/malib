@@ -10,24 +10,21 @@ default rel
 %define SYS_WRITE	1
 %define	SYS_EXIT	60
 
-
 SECTION .data
 
 exit_code		db	0
 hello_x64		db	`Hello, x64 world!\n`, 0
 
-
 SECTION .bss
-
 
 SECTION .text
 	global _start
-	extern print_str
+	extern ma_printstr
 
 _start:
 	mov	rdi, STDOUT
 	lea	rsi, [hello_x64]
-	call 	print_str
+	call 	ma_printstr
 
 _exit:
 	mov	rax, SYS_EXIT

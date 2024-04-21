@@ -4,3 +4,7 @@ malib-test
 
 *.o
 *.d
+
+.idea
+
+tmp/

@@ -11,10 +11,10 @@ int test_str_len() {
 
 	int ret = 0;
 
-	if (str_len(TEST_STR01) != 13)
+	if (ma_strlen(TEST_STR01) != 13)
 		ret = -1;
 
-	if (str_len(TEST_STR02) != 18)
+	if (ma_strlen(TEST_STR02) != 18)
 		ret = -1;
 
 
@@ -34,6 +34,6 @@ int main(int argc, char **argv)
 		fprintf(stderr, "FAILED\n");
 	else
 		fprintf(stderr, "OK\n");
-		
+
 	return TEST_RET;
 }
