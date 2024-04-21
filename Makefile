@@ -75,14 +75,16 @@ TEST_SUITE_02		= test_api
 TEST_SUITE_02_SRCS	= test_api.c
 TEST_SUITE_02_OBJS	= $(TEST_SUITE_02_SRCS:%.c=$(TEST_BUILD)/%.o)
 
-.PHONY: test test-clean
+.PHONY: test test-all test-clean
 
-test: $(addprefix $(TEST_BUILD)/,$(TEST_SUITE_01) $(TEST_SUITE_02))
+test: test-all
 	@echo -n  $(TEST_BUILD)/$(TEST_SUITE_01)": "
 	@$(TEST_BUILD)/$(TEST_SUITE_01) && echo OK || echo FAIL
 
 	@echo -n  $(TEST_BUILD)/$(TEST_SUITE_02)": "
 	@$(TEST_BUILD)/$(TEST_SUITE_02) && echo OK || echo FAIL
+
+test-all: $(addprefix $(TEST_BUILD)/,$(TEST_SUITE_01) $(TEST_SUITE_02))
 
 $(TEST_BUILD)/$(TEST_SUITE_01): $(TEST_SUITE_01_OBJS) $(BUILD)/$(LIB)
 	$(LD) $(TEST_LDFLAGS) $^ -o $@
