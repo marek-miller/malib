@@ -36,26 +36,27 @@ test_strlen:
 
 %macro case_strlen 2
 	push 	rax
-	mov	rdi, %1
+	lea	rdi, [%1]
 	call	ma_strlen
 
 	mov	rdx, %2
 	cmp	rax, rdx
-	je	%%end
+	je	%%ret
 	mov	qword [rsp], test_fail
-%%end:	pop	rax
+%%ret:	pop	rax
 %endmacro
 
 	case_strlen str01, str01_len
 	case_strlen str02, str02_len
 
+	lea	rdi, [str03]
 	xor	rcx, rcx
 .set_str:
-	mov	[str03 + rcx], byte 'A'
+	mov	[rdi + rcx], byte 'A'
 	inc	rcx
 	cmp	rcx, str03_len
 	jne	.set_str
-	mov	[str03 + rcx], byte 0
+	mov	[rdi + rcx], byte 0
 
 	case_strlen str03, str03_len
 
