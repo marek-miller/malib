@@ -25,15 +25,16 @@ SECTION .text
 ;	rax	- number of characters written
 ma_print:
 	push	rdi
+	push	rsi
 	mov	rdi, rsi
 	call	ma_strlen
+	pop	rsi
 	pop	rdi
 
+	mov	rdx, rax
 	push	rax
-	mov	rax, SYS_WRITE	
-	mov	rdx, [rsp]	
+	mov	rax, SYS_WRITE
 	syscall
-
 	pop	rax
 	ret
 
@@ -45,12 +46,12 @@ ma_print:
 ; Returns:
 ;	rax	- number of characters in the string
 ma_strlen:
+	cld
 	xor	rax, rax
-	dec	rax
-.count:
-	inc	rax
-	cmp 	[rdi+rax], byte 0
-	jne	.count
+	mov	rcx, -1
+	repne 	scasb
+	add	rcx, 2
+	sub	rax, rcx
 	ret	
 
 ; Convert an unsigned hex integer to ASCII
