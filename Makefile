@@ -55,6 +55,7 @@ $(OBJ) $(BIN):
 	$(MKDIR) $@
 
 clean: test-clean
+	$(RM) $(BUILD)/$(EXE) $(BUILD)/$(LIB)
 	$(RMDIR) $(OBJ) $(BIN)
 
 
