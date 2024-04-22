@@ -1,6 +1,6 @@
-default rel
-
 %include "malib.inc"
+%include "malib_int.inc"
+
 %include "syscalls.inc"
 
 global _start
@@ -22,7 +22,6 @@ str03_len	equ	1024*1024
 str03		resb	str03_len+1
 
 SECTION .text
-	extern ma_print, ma_strlen, ma_toa
 
 _start:
 	call	test_strlen
@@ -43,7 +42,7 @@ _test_fail:
 	lea	rsi, [TEST_FAILMSG]
 	call	ma_print
 	lea	rdi, [TEST_RT]
-        mov	[rdi], byte EXIT_FAILURE
+        mov	[rdi], dword EXIT_FAILURE
 	ret
 
 test_strlen:

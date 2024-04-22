@@ -21,7 +21,7 @@ MKDIR	= mkdir -p
 RMDIR	= rm -rf
 
 AS	= nasm
-ASFLAGS	= -f elf64 -g -F dwarf -w+all -w-reloc-rel-dword -I$(INCLUDE)
+ASFLAGS	= -f elf64 -g -F dwarf -w+all -w-reloc-rel-dword -I$(INCLUDE) -I$(SRC)
 
 CC	= gcc
 CFLAGS	= -Wall -Wextra -g -I$(INCLUDE)
