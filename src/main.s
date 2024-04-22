@@ -1,7 +1,6 @@
-default rel
-
-%include "syscalls.inc"
+%include "malib_int.inc"
 %include "malib.inc"
+%include "syscalls.inc"
 
 global _start
 

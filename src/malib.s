@@ -1,8 +1,10 @@
+%include "malib_int.inc"
 %define MALIB_API
-global ma_print, ma_strlen, ma_toa
+global		ma_print
+global		ma_strlen
+global		ma_toa
 
 %include "malib.inc"
-%include "malib_int.inc"
 %include "syscalls.inc"
 
 SECTION .data
@@ -25,6 +27,7 @@ ma_print:
 	push	rax
 	mov	rax, SYS_WRITE
 	syscall
+.rt:
 	pop	rax
 	ret
 
@@ -34,7 +37,7 @@ ma_strlen:
 	cld
 	repne 	scasb			; repeat until \0 character found
 	add	rcx, 2			; rcx = -#steps-2
-	 				; (last iteration decremented it too)
+.rt:	 				; (last iteration decremented it too)
 	sub	rax, rcx
 	ret	
 
