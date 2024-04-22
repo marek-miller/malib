@@ -15,7 +15,7 @@ SECTION .text
 	extern ma_print, ma_toa
 
 _start:
-	mov	rdi, hello_x64 + 0x8	; offset to write to
+	lea	rdi, [hello_x64 + 0x8]	; offset to write to
 	mov	rsi, 0x64		; number to covert
 	mov	rdx, 0x2		; write 2 bytes
 	call	ma_toa

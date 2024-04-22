@@ -46,9 +46,9 @@ ma_print:
 ; Returns:
 ;	rax	- number of characters in the string
 ma_strlen:
-	cld
 	xor	rax, rax
 	mov	rcx, -1
+	cld
 	repne 	scasb
 	add	rcx, 2
 	sub	rax, rcx
@@ -59,29 +59,33 @@ ma_strlen:
 ; Parameters:
 ;	rdi	- memory address to write to
 ;	rsi	- hex integer
-;	rdx	- number of bytes to write
-;	(more than 8 results in additional padding with '0')
+;	rdx	- number of bytes to write (more than 8
+;		  will result in additional padding with '0')
 ;
 ; Returns:
 ;	rax 	- number of bytes written
 ma_toa:
-	push	rdx
-	cmp	rdx, 0
-	jne	.write
-	pop	rax
-	ret
-.write:
-	dec	rdx
-	mov	rcx, rsi
-	and	rcx, 0xf
-	lea	rax, [toa_charset]
-	add	rax, rcx
-	mov	cl, [rax]
-	mov	[rdi + rdx], cl
-	shr	rsi, 4
-	cmp	rdx, 0
-	jne	.write
+	or	rdx, rdx
+	jz	.rt
 
-	pop	rax
-	sub	rax, rdx
+	mov	rcx, rdx
+	add	rdi, rdx
+	dec	rdi
+	push	rdx
+
+	lea	rdx, [toa_charset]
+	mov	rax, rsi
+	std
+.lp:
+	mov	rsi, rax
+	and	rsi, 0xf
+	add	rsi, rdx
+	movsb
+	shr	rax, 4
+	loop	.lp
+	
+	cld
+	pop	rdx
+.rt:
+	mov	rax, rdx
 	ret
