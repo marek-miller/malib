@@ -33,7 +33,6 @@ _exit:
 	syscall
 
 test_strlen:
-
 	; initiate str03
 	lea	rdi, [str03]
 	xor	rcx, rcx
@@ -52,9 +51,9 @@ test_strlen:
 
 	mov	rdx, %2
 	cmp	rax, rdx
-	je	%%ret
+	je	%%.rt
 	mov	qword [rsp], test_fail
-%%ret:	pop	rax
+%%.rt:	pop	rax
 %endmacro
 
 	case_strlen str01, str01_len
