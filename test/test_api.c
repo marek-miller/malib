@@ -7,8 +7,9 @@ static int TEST_RET = 0;
 static char *TEST_STR01 = "Hello, malib!";
 static char *TEST_STR02 = "Huqmkvello, maioal";
 
-int test_str_len() {
-
+int
+test_str_len()
+{
 	int ret = 0;
 
 	if (ma_strlen(TEST_STR01) != 13)
@@ -17,17 +18,16 @@ int test_str_len() {
 	if (ma_strlen(TEST_STR02) != 18)
 		ret = -1;
 
-
 	return ret;
 }
 
-
-int main(int argc, char **argv) 
+int
+main(int argc, char **argv)
 {
-	(void) argc;
-	(void) argv;
+	(void)argc;
+	(void)argv;
 
-	if (test_str_len() < 0) 
+	if (test_str_len() < 0)
 		TEST_RET = -1;
 
 	return TEST_RET;
