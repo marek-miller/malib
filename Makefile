@@ -34,10 +34,9 @@ LDLIBS	=
 
 .PHONY: all clean
 
-all: $(BUILD)/$(EXE)
+.DEFAULT: all
 
-run: $(BUILD)/$(EXE)
-	@time -p $(BUILD)/$(EXE)
+all: $(BUILD)/$(EXE) test-all
 
 $(BUILD)/$(EXE): $(OBJ)/$(EXE_OBJS) $(BUILD)/$(LIB)
 	$(LD) $(LDFLAGS) $^ -o $@
@@ -56,6 +55,7 @@ $(OBJ) $(BIN):
 	$(MKDIR) $@
 
 clean: test-clean
+	$(RM) $(BUILD)/$(EXE) $(BUILD)/$(LIB)
 	$(RMDIR) $(OBJ) $(BIN)
 
 

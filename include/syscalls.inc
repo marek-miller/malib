@@ -1,5 +1,4 @@
 ; system calls
-;
 ;                                  rax  ; rdi                               rsi                                   rdx                                  r10                            r8                                   r9
 %define SYS_READ                   0    ; unsigned int fd                   char *buf                             size_t count
 %define SYS_WRITE                  1    ; unsigned int fd                   const char *buf                       size_t count

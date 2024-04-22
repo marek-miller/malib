@@ -2,6 +2,7 @@
 #define MALIB_H
 
 #include <stdlib.h>
+#include <stdint.h>
 
 #define MA_STDIN     (0)
 #define MA_STDOUT    (1)
@@ -9,6 +10,8 @@
 
 size_t ma_strlen(char *);
 
-void ma_printstr(int fd, char *);
+void ma_print(int fd, char *);
+
+size_t ma_toa(char *, uint64_t, size_t);
 
 #endif // MALIB_H
