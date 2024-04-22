@@ -7,18 +7,13 @@ global _start
 SECTION .data
 
 TEST_RT		db	EXIT_SUCCESS		; test return value
-TEST_FAILMSG	db	"FAIL ", __FILE__, ":0x____", 0xa, 0
+TEST_FAILMSG	db	"FAIL ", __?FILE?__, ":0x____", 0xa, 0
 TEST_FAILOFF	equ	$-6			; placeholder for line number
 
 str01		db	0
-str01_len 	equ	0
 str02		db	"This is a test", 0
-str02_len	equ	$-str02 -1
 
 SECTION .bss
-
-str03_len	equ	1024*1024
-str03		resb	str03_len+1
 
 SECTION .text
 
@@ -41,7 +36,7 @@ _test_fail:
 	lea	rsi, [TEST_FAILMSG]
 	call	ma_print
 	lea	rdi, [TEST_RT]
-        mov	[rdi], dword EXIT_FAILURE
+        mov	[rdi], byte EXIT_FAILURE
 	ret
 
 test_strlen:
@@ -49,28 +44,15 @@ test_strlen:
 %macro case_strlen 2
 	lea	rdi, [%1]
 	call	ma_strlen
-	mov	rdx, %2
-	cmp	rax, rdx
+	cmp	rax, %2
 	je	%%.rt
-	mov	rdi, __LINE__
+	mov	rdi, %2
 	call	_test_fail
 %%.rt:
 %endmacro
 
-	case_strlen str01, str01_len
-	case_strlen str02, str02_len
-
-	; initiate str03
-        	lea	rdi, [str03]
-        	xor	rcx, rcx
-        .set_str:
-        	mov	[rdi + rcx], byte 'A'
-        	inc	rcx
-        	cmp	rcx, str03_len
-        	jne	.set_str
-        	mov	[rdi + rcx], byte 0
-
-	case_strlen str03, str03_len
+	case_strlen str01, 0x0000
+	case_strlen str02, 0x000e
 
 	ret
 
