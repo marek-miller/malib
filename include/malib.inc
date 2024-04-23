@@ -4,7 +4,7 @@
 ; Print a null-terminated string to file destriptor.
 ;
 ; Parameters:
-;	rdi	- file destriptor, e.g. MA_STDOUT
+;	rdi	- file destriptor, e.g. STDOUT, STDERR
 ;	rsi	- string address
 ; Returns:
 ;	rax	- number of characters written
@@ -28,7 +28,7 @@ extern ma_strlen
 ;	rdi	- memory address to write to
 ;	rsi	- hex integer
 ;	rdx	- number of bytes to write (more than 8
-;		  will result in additional padding with '0')
+;		  will result in additional padding on the left with '0')
 ; Returns:
 ;	rax 	- number of bytes written
 ;

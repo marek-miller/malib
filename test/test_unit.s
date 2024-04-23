@@ -16,9 +16,10 @@ str02		db	"This is a test", 0
 str03		db	"This is also", 0, "a test", 0
 
 toa_buf		db	"________________"
-toa_int		dq	0x1234, 0x333, 0x1, 0x7777
-toa_len		dq	4, 3, 8, 0
-toa_exp		db	"1234____", "333_____", "00000001", "________"
+toa_int		dq	0x1234, 0x333, 0x1, 0x7777, 0xababe, 0x1a2bc9
+toa_len		dq	4, 3, 8, 0, 5, 6
+toa_exp		db	"1234____", "333_____", "00000001", \
+			"________", "ababe___", "1a2bc9__"
 
 SECTION .bss
 
@@ -55,9 +56,9 @@ test_strlen:
 	call	_test_fail
 %%.rt:
 %endmacro
-	case_strlen	str01, 0x00, __?LINE?__
-	case_strlen	str02, 0x0e, __?LINE?__
-	case_strlen	str03, 0x0c, __?LINE?__
+	case_strlen	str01, 0x00, 0x0000
+	case_strlen	str02, 0x0e, 0x0001
+	case_strlen	str03, 0x0c, 0x0002
 
 	ret
 
@@ -85,9 +86,11 @@ test_toa:
 %%.rt:
 %endmacro
 
-	case_toa	0, __?LINE?__
-	case_toa	1, __?LINE?__
-	case_toa	2, __?LINE?__
-	case_toa	3, __?LINE?__
+	case_toa	0, 0x0010
+	case_toa	1, 0x0011
+	case_toa	2, 0x0012
+	case_toa	3, 0x0013
+	case_toa	4, 0x0014
+	case_toa	5, 0x0015
 
 	ret
