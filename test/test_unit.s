@@ -8,10 +8,11 @@ SECTION .data
 
 TEST_RT		db	EXIT_SUCCESS		; test return value
 TEST_FAILMSG	db	"FAIL ", __?FILE?__, ":0x____", 0xa, 0
-TEST_FAILOFF	equ	$-6			; placeholder for line number
+TEST_FAILOFF	equ	$-6			; placeholder for a tag
 
 str01		db	0
 str02		db	"This is a test", 0
+str03		db	"This is also", 0, "a test", 0
 
 SECTION .bss
 
@@ -35,12 +36,11 @@ _test_fail:
 	mov	rdi, STDERR
 	lea	rsi, [TEST_FAILMSG]
 	call	ma_print
-	lea	rdi, [TEST_RT]
-        mov	[rdi], byte EXIT_FAILURE
+        mov	[TEST_RT], byte EXIT_FAILURE
 	ret
 
 test_strlen:
-	; check if ma_strlen returns correct length
+
 %macro case_strlen 2
 	lea	rdi, [%1]
 	call	ma_strlen
@@ -51,8 +51,8 @@ test_strlen:
 %%.rt:
 %endmacro
 
-	case_strlen str01, 0x0000
-	case_strlen str02, 0x000e
+	case_strlen	str01, 0x00
+	case_strlen	str02, 0x0e
+	case_strlen	str03, 0x0c
 
 	ret
-
