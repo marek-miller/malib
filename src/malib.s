@@ -35,7 +35,7 @@ ma_strlen:
 	add	rcx, 2			; rcx = -#steps-2
 
 .rt:	sub	rax, rcx
-	ret	
+	ret
 
 
 ma_toa:
@@ -46,8 +46,9 @@ ma_toa:
 	mov	 r8, '01234567'		; lookup table
 	mov	 r9, '89abcdef'
 
-	xor	rax, rax		; check if rdx is greater than 16,
-.l0:	cmp	rdx, 16			;  for larger values we print zeros.
+	xor	rax, rax		; check if rdx is greater than 16
+	mov	al, '0'			; for larger values we print zeros
+.l0:	cmp	rdx, 16
 	jle	.l1
 	stosb
 	dec	rdx

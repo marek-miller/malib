@@ -6,20 +6,22 @@ global _start
 
 SECTION .data
 
-TEST_RT		db	EXIT_SUCCESS		; test return value
+TEST_RT		db	EXIT_SUCCESS	; test return value
 TEST_FAILMSG	db	"FAIL ", __?FILE?__, ":0x____", 0xa, 0
-TEST_FAILOFF	equ	$-6			; placeholder for a tag
+TEST_FAILOFF	equ	$-6		; placeholder for a tag
 
 str01		db	0
 str02		db	"This is a test", 0
 str03		db	"This is also", 0, "a test", 0
 
-toa_buf		db	"________________"
+align 8
+toa_buf		db	"________________", "__"
+align 8
 toa_int		dq	0x333, 0x1, 0x7777, 0xababe, 0x1a2bc9, 0x1234
 toa_len		dq	3, 9, 0, 5, 6, 18
 toa_exp		db	"333_____________", "000000001_______", \
 			"________________", "ababe___________", \
-			"1a2bc9__________", "000000000000001234"
+			"1a2bc9__________", "0000000000000012"
 
 SECTION .bss
 
@@ -80,15 +82,16 @@ test_toa:
 	call	ma_toa
 	pop	rdi
 
-	xor	cl, cl			; compare result (16 digits)
+	xor	cx, cx			; compare result (16 digits)
 	mov	rax, [toa_exp + 16*%1]
 	cmp	[rdi], rax
 	setne	cl
 	mov	rax, [toa_exp + 16*%1 + 8]
 	cmp	[rdi+8], rax
-	setne	cl
-	or	cl, cl
+	setne	ch
+	or	cl, ch
 	jz	%%.rt
+
 	push	rdi
 	mov	rdi, %2
 	call	_test_fail
