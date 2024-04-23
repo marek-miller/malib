@@ -43,9 +43,12 @@ ma_toa:
 	or	rdx, rdx
 	jz	.rt
 
-	mov	 r8, '89abcdef'		; lookup table, little endian
+	mov	 r8, '01234567'		; lookup table, little endian
+	mov	 r9, '89abcdef'
 
-	mov	rcx, rdx		; rotate rsi, each digit is 4 bits
+; TODO: print zeros if rdx greater than 16. Test it
+
+.l0:	mov	rcx, rdx		; rotate rsi, each digit is 4 bits
 	shl	 cl, 2
 	ror	rsi, cl
 
@@ -53,9 +56,9 @@ ma_toa:
 	mov	rcx, rsi
 	and	 cl,  0x0f		; extract and clear digit, so it won't
 	and	rsi, -0x10		;   reappear after full lap of rol's
-	mov	rax, '01234567'
+	mov	rax, r8
 	cmp	 cl, 8			; if the digit is greater than 8,
-	cmovge	rax, r8			;   we use 2nd half of the lookup table
+	cmovge	rax, r9			;   we use 2nd half of the lookup table
 	and	 cl, 0xf7		;   and subtract 8
 	shl	 cl, 3			; each ascii sign is 8 bits
 	shr	rax, cl
