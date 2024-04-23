@@ -43,24 +43,23 @@ ma_toa:
 	push	rdx
 	or	rdx, rdx
 	jz	.rt
-	add	rdi, rdx
-	dec	rdi			; rdi - end of buffer
-
-	std
-.lp:	mov	rax, '01234567'		; little endian
+.l0:	mov	rcx, rdx		; rotate rsi, each digit is 4 bits
+	shl	 cl, 2
+	ror	rsi, cl
+	cld
+.l1:	rol	rsi, 4
 	mov	rcx, rsi
-	and	cl, 0x0f
-	cmp	cl, 8
-	jl	.l1
-	mov	rax, '89abcdef'
-	sub	cl, 8
-.l1:	shl	cl, 3
+	and	 cl,  0x0f
+	and	rsi, -0x10		; clear this digit, so it won't
+	mov	rax, '01234567'		;   reappear after a full lap of rol's
+	cmp	 cl, 8
+	jl	.l2
+	mov	rax, '89abcdef'		; if the digit is greater than 8,
+	sub	 cl, 8			;   we use 2nd half of the lookup table
+.l2:	shl	 cl, 3			; each ascii sign is 8 bits
 	shr	rax, cl
 	stosb
-	shr	rsi, 4			; get next digit
 	dec	rdx
-	jnz	.lp
-	cld
-
+	jnz	.l1
 .rt:	pop	rax
 	ret
