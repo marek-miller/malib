@@ -9,57 +9,59 @@ global		ma_toa
 
 SECTION .data
 
-toa_chset	db	'0123456789abcdef'
-
 SECTION .bss
 
 SECTION .text
 
 ma_print:
 	push	rdi			; calculate string length
-	push	rsi			; ma_srlnen need not preserve rdi/rsi
 	mov	rdi, rsi
-	call	ma_strlen
-	pop	rsi
+	call	ma_strlen		; we know that rsi is preserved here
 	pop	rdi
 
-	mov	rdx, rax		; rax = string length
+.l1:	mov	rdx, rax		; rax = string length
 	push	rax
 	mov	rax, SYS_WRITE
 	syscall
-.rt:
-	pop	rax
+
+.rt:	pop	rax
 	ret
+
 
 ma_strlen:
 	xor	rax, rax
 	mov	rcx, -1			; set the counter to max value
-	cld
 	repne 	scasb			; repeat until \0 character found
 	add	rcx, 2			; rcx = -#steps-2
-.rt:	 				; (last iteration decremented it too)
-	sub	rax, rcx
+
+.rt:	sub	rax, rcx
 	ret	
 
+
 ma_toa:
-	push	rdx			; if num_bytes is zero, return
+	push	rdx
 	or	rdx, rdx
 	jz	.rt
 
-	mov	rcx, rdx		; rearrange function params:
-	add	rdi, rdx		; rcx - num_bytes
-	dec	rdi			; rdi - end of buffer
-	lea	rdx, [toa_chset]	; rdx - charset lookup table
-	mov	rax, rsi		; rax - hex integer to convert
-	std				; loop in reverse order, clear DF later
-.lp:
-	mov	rsi, rax		; get the least signifcant digit
-	and	rsi, 0xf		;
-	add	rsi, rdx		; look its symbol up in the charset
-	movsb				;
-	shr	rax, 4			; get next digit
-	loop	.lp
-	cld
-.rt:
-	pop	rax
+	mov	 r8, '89abcdef'		; lookup table, little endian
+
+	mov	rcx, rdx		; rotate rsi, each digit is 4 bits
+	shl	 cl, 2
+	ror	rsi, cl
+
+.l1:	rol	rsi, 4
+	mov	rcx, rsi
+	and	 cl,  0x0f		; extract and clear digit, so it won't
+	and	rsi, -0x10		;   reappear after full lap of rol's
+	mov	rax, '01234567'
+	cmp	 cl, 8			; if the digit is greater than 8,
+	cmovge	rax, r8			;   we use 2nd half of the lookup table
+	and	 cl, 0xf7		;   and subtract 8
+	shl	 cl, 3			; each ascii sign is 8 bits
+	shr	rax, cl
+	stosb
+	dec	rdx
+	jnz	.l1
+
+.rt:	pop	rax
 	ret
