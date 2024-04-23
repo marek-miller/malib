@@ -18,29 +18,37 @@ ma_print:
 	mov	rdi, rsi
 	call	ma_strlen		; we know that rsi is preserved here
 	pop	rdi
+
 .l1:	mov	rdx, rax		; rax = string length
 	push	rax
 	mov	rax, SYS_WRITE
 	syscall
+
 .rt:	pop	rax
 	ret
+
 
 ma_strlen:
 	xor	rax, rax
 	mov	rcx, -1			; set the counter to max value
 	repne 	scasb			; repeat until \0 character found
 	add	rcx, 2			; rcx = -#steps-2
+
 .rt:	sub	rax, rcx
 	ret	
+
 
 ma_toa:
 	push	rdx
 	or	rdx, rdx
 	jz	.rt
+
 	mov	 r8, '89abcdef'		; lookup table, little endian
-.l0:	mov	rcx, rdx		; rotate rsi, each digit is 4 bits
+
+	mov	rcx, rdx		; rotate rsi, each digit is 4 bits
 	shl	 cl, 2
 	ror	rsi, cl
+
 .l1:	rol	rsi, 4
 	mov	rcx, rsi
 	and	 cl,  0x0f		; extract and clear digit, so it won't
@@ -54,5 +62,6 @@ ma_toa:
 	stosb
 	dec	rdx
 	jnz	.l1
+
 .rt:	pop	rax
 	ret
