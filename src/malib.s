@@ -56,8 +56,7 @@ ma_toa:
 	mov	rax, '01234567'
 	cmp	 cl, 8			; if the digit is greater than 8,
 	cmovge	rax, r8			;   we use 2nd half of the lookup table
-	;and	 cl, 0xf7		;   and subtract 8
-	sub	cl, 8
+	and	 cl, 0xf7		;   and subtract 8
 	shl	 cl, 3			; each ascii sign is 8 bits
 	shr	rax, cl
 	stosb
