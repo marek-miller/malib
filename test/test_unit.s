@@ -35,6 +35,10 @@ _exit:
 	syscall
 
 ; Print debugging info and set global return value to EXIT_FAILURE.
+;
+; Parameters:
+;	rdi	- tag to print
+;
 _test_fail:
 	mov	rsi, rdi
 	mov	rdx, 4
@@ -66,18 +70,17 @@ test_toa:
 	lea 	rdi, [toa_buf]
 
 %macro case_toa 2
-	; clear the buffer
-	mov	rax,  '________'
+	mov	rax,  '________'	; clear the buffer
 	mov	qword [rdi], rax
 	mov	qword [rdi+8], rax
-	; call ma_toa
-	push	rdi
+
+	push	rdi			; call ma_toa
 	mov	rsi, qword [toa_int + 8*%1]
 	mov	rdx, qword [toa_len + 8*%1]
 	call	ma_toa
 	pop	rdi
-	; compare result (16 digits only)
-	xor	cl, cl
+
+	xor	cl, cl			; compare result (16 digits)
 	mov	rax, [toa_exp + 16*%1]
 	cmp	[rdi], rax
 	setne	cl
