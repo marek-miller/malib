@@ -7,7 +7,6 @@ global _start
 SECTION .data
 
 TEST_RT		db	EXIT_SUCCESS		; test return value
-
 TEST_FAILMSG	db	"FAIL ", __?FILE?__, ":0x____", 0xa, 0
 TEST_FAILOFF	equ	$-6			; placeholder for a tag
 
@@ -16,10 +15,11 @@ str02		db	"This is a test", 0
 str03		db	"This is also", 0, "a test", 0
 
 toa_buf		db	"________________"
-toa_int		dq	0x1234, 0x333, 0x1, 0x7777, 0xababe, 0x1a2bc9
-toa_len		dq	4, 3, 8, 0, 5, 6
-toa_exp		db	"1234____", "333_____", "00000001", \
-			"________", "ababe___", "1a2bc9__"
+toa_int		dq	0x333, 0x1, 0x7777, 0xababe, 0x1a2bc9, 0x1234
+toa_len		dq	3, 9, 0, 5, 6, 18
+toa_exp		db	"333_____________", "000000001_______", \
+			"________________", "ababe___________", \
+			"1a2bc9__________", "000000000000001234"
 
 SECTION .bss
 
@@ -69,15 +69,22 @@ test_toa:
 	; clear the buffer
 	mov	rax,  '________'
 	mov	qword [rdi], rax
+	mov	qword [rdi+8], rax
 	; call ma_toa
 	push	rdi
 	mov	rsi, qword [toa_int + 8*%1]
 	mov	rdx, qword [toa_len + 8*%1]
 	call	ma_toa
 	pop	rdi
-	; compare result
-	mov	rax, [toa_exp + 8*%1]
+	; compare result (16 digits only)
+	xor	cl, cl
+	mov	rax, [toa_exp + 16*%1]
 	cmp	[rdi], rax
+	setne	cl
+	mov	rax, [toa_exp + 16*%1 + 8]
+	cmp	[rdi+8], rax
+	setne	cl
+	or	cl, cl
 	jz	%%.rt
 	push	rdi
 	mov	rdi, %2
