@@ -29,29 +29,31 @@ ma_print:
 .rt:	pop	rax
 	ret
 
+
 ma_strlen:
 	xor	rax, rax
 	mov	rcx, -1			; set the counter to max value
 	cld
 	repne 	scasb			; repeat until \0 character found
 	add	rcx, 2			; rcx = -#steps-2
-
 .rt:	sub	rax, rcx
 	ret	
+
 
 ma_toa:
 	push	rdx
 	or	rdx, rdx
 	jz	.rt
+
 .l0:	mov	rcx, rdx		; rotate rsi, each digit is 4 bits
 	shl	 cl, 2
 	ror	rsi, cl
 	cld
 .l1:	rol	rsi, 4
 	mov	rcx, rsi
-	and	 cl,  0x0f
-	and	rsi, -0x10		; clear this digit, so it won't
-	mov	rax, '01234567'		;   reappear after a full lap of rol's
+	and	 cl,  0x0f		; extract and clear this digit, so it
+	and	rsi, -0x10		; won't reappear after full lap of rol's
+	mov	rax, '01234567'
 	cmp	 cl, 8
 	jl	.l2
 	mov	rax, '89abcdef'		; if the digit is greater than 8,
@@ -61,5 +63,6 @@ ma_toa:
 	stosb
 	dec	rdx
 	jnz	.l1
+
 .rt:	pop	rax
 	ret
