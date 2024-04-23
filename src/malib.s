@@ -9,8 +9,6 @@ global		ma_toa
 
 SECTION .data
 
-toa_chset	db	'0123456789abcdef'
-
 SECTION .bss
 
 SECTION .text
@@ -27,8 +25,8 @@ ma_print:
 	push	rax
 	mov	rax, SYS_WRITE
 	syscall
-.rt:
-	pop	rax
+
+.rt:	pop	rax
 	ret
 
 ma_strlen:
@@ -37,29 +35,32 @@ ma_strlen:
 	cld
 	repne 	scasb			; repeat until \0 character found
 	add	rcx, 2			; rcx = -#steps-2
-.rt:	 				; (last iteration decremented it too)
-	sub	rax, rcx
+
+.rt:	sub	rax, rcx
 	ret	
 
 ma_toa:
-	push	rdx			; if num_bytes is zero, return
+	push	rdx
 	or	rdx, rdx
 	jz	.rt
-
-	mov	rcx, rdx		; rearrange function params:
-	add	rdi, rdx		; rcx - num_bytes
+	add	rdi, rdx
 	dec	rdi			; rdi - end of buffer
-	lea	rdx, [toa_chset]	; rdx - charset lookup table
-	mov	rax, rsi		; rax - hex integer to convert
-	std				; loop in reverse order, clear DF later
-.lp:
-	mov	rsi, rax		; get the least signifcant digit
-	and	rsi, 0xf		;
-	add	rsi, rdx		; look its symbol up in the charset
-	movsb				;
-	shr	rax, 4			; get next digit
-	loop	.lp
+
+	std
+.lp:	mov	rax, '01234567'		; little endian
+	mov	rcx, rsi
+	and	cl, 0x0f
+	cmp	cl, 8
+	jl	.l1
+	mov	rax, '89abcdef'
+	sub	cl, 8
+.l1:	shl	cl, 3
+	shr	rax, cl
+	stosb
+	shr	rsi, 4			; get next digit
+	dec	rdx
+	jnz	.lp
 	cld
-.rt:
-	pop	rax
+
+.rt:	pop	rax
 	ret
