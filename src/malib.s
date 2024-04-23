@@ -59,9 +59,8 @@ ma_toa:
 
 .l3:	rol	rsi, 4
 	mov	rcx, rsi
-	and	 cl,  0x0f		; extract and clear digit, so it won't
-	and	rsi, -0x10		;   reappear after full lap of rol's
-	mov	rax, r8
+	and	 cl, 0x0f		; extract digit, we don'n need it to
+	mov	rax, r8			;  clear it from rsi since rdx < 16
 	cmp	 cl, 8			; if the digit is greater than 8,
 	cmovge	rax, r9			;   we use 2nd half of the lookup table
 	and	 cl, 0xf7		;   and subtract 8
