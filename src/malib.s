@@ -3,6 +3,7 @@
 global		ma_print
 global		ma_strlen
 global		ma_toa
+global		ma_xorshift64
 
 %include "malib.inc"
 %include "syscalls.inc"
@@ -19,7 +20,7 @@ ma_print:
 	call	ma_strlen		; we know that rsi is preserved here
 	pop	rdi
 
-.l1:	mov	rdx, rax		; rax = string length
+	mov	rdx, rax		; rax = string length
 	push	rax
 	mov	rax, SYS_WRITE
 	syscall
@@ -49,7 +50,7 @@ ma_toa:
 	xor	rax, rax		; check if rdx is greater than 16
 	mov	al, '0'			; for larger values we print zeros
 .l0:	cmp	rdx, 16
-	jle	.l1
+	jbe	.l1
 	stosb
 	dec	rdx
 	jmp	.l0
@@ -58,7 +59,7 @@ ma_toa:
 	shl	 cl, 2
 	ror	rsi, cl
 
-.l3:	rol	rsi, 4
+.l2:	rol	rsi, 4
 	mov	rcx, rsi
 	and	 cl, 0x0f		; extract digit, we don'n need it to
 	mov	rax, r8			;  clear it from rsi since rdx < 16
@@ -69,7 +70,22 @@ ma_toa:
 	shr	rax, cl
 	stosb
 	dec	rdx
-	jnz	.l3
+	jnz	.l2
 
 .rt:	pop	rax
+	ret
+
+
+ma_xorshift64:
+	mov	rax, [rdi]
+	mov	rdx, rax
+	shl	rax, 13
+	xor	rax, rdx
+	mov	rdx, rax
+	shr	rax, 7
+	xor	rax, rdx
+	mov	rdx, rax
+	shl	rax, 17
+	xor	rax, rdx
+.rt:	mov	[rdi], rax
 	ret

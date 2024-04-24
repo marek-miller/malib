@@ -30,6 +30,7 @@ SECTION .text
 _start:
 	call	test_strlen
 	call	test_toa
+	call	test_xorshift64
 
 _exit:
 	mov	rax, SYS_EXIT
@@ -40,7 +41,8 @@ _exit:
 ;
 ; Parameters:
 ;	rdi	- tag to print
-;
+; Returns
+;	rax	- EXIT_FAILURE
 _test_fail:
 	mov	rsi, rdi
 	mov	rdx, 4
@@ -49,7 +51,8 @@ _test_fail:
 	mov	rdi, STDERR
 	lea	rsi, [TEST_FAILMSG]
 	call	ma_print
-        mov	[TEST_RT], byte EXIT_FAILURE
+        mov	rax, EXIT_FAILURE
+        mov	[TEST_RT], al
 	ret
 
 test_strlen:
@@ -62,6 +65,7 @@ test_strlen:
 	call	_test_fail
 %%.rt:
 %endmacro
+
 	case_strlen	str01, 0x00, 0x0000
 	case_strlen	str02, 0x0e, 0x0001
 	case_strlen	str03, 0x0c, 0x0002
@@ -99,11 +103,40 @@ test_toa:
 %%.rt:
 %endmacro
 
-	case_toa	0, 0x0010
-	case_toa	1, 0x0011
-	case_toa	2, 0x0012
-	case_toa	3, 0x0013
-	case_toa	4, 0x0014
-	case_toa	5, 0x0015
+	case_toa	0, 0x0100
+	case_toa	1, 0x0101
+	case_toa	2, 0x0102
+	case_toa	3, 0x0103
+	case_toa	4, 0x0104
+	case_toa	5, 0x0105
 
+	ret
+
+
+test_xorshift64:
+	push	r12
+	push	r13
+	push	rbp
+	mov	rbp, rsp
+	sub	rsp, 0x08
+
+	mov	qword -8[rbp], 1111	; seed
+
+	lea	r13, -8[rbp]
+	mov	r12, 64
+.lp:	mov	rdi, r13
+	call	ma_xorshift64
+	dec	r12
+	jnz	.lp
+
+	mov	rdx, 0xc20dae4994e35988	; check the last number generated
+	cmp	rax, rdx		; (cmp takes only 32bit immidiates)
+	je	.rt
+	mov	rdi, 0x0200		; tag
+	call	_test_fail
+
+.rt:	mov	rsp, rbp
+	pop	rbp
+	pop	r13
+	pop	r12
 	ret

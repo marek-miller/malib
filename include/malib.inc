@@ -34,6 +34,21 @@ extern ma_strlen
 ;
 extern ma_toa
 
+
+; Xorshift PRNG by G.Marsaglia.
+;
+; Marsaglia, G., Xorshift RNGs.
+; Journal of Statistical Software, 8(14), 1–6 (2003).
+; https://doi.org/10.18637/jss.v008.i14
+;
+; Parameters:
+;	rdi	- pointer to state (nonzero qword)
+; Returns:
+;	rax	- pseudorandom 64 bit unsigned integer
+; Notes:
+;  The function updates the state (qword), address of which is preserved in rdi.
+extern ma_xorshift64
+
 %endif ; MALIB_API
 
 %ifndef MALIB_CONSTS
