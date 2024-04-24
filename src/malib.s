@@ -3,6 +3,7 @@
 global		ma_print
 global		ma_strlen
 global		ma_toa
+global		ma_xorshift64
 
 %include "malib.inc"
 %include "syscalls.inc"
@@ -72,4 +73,19 @@ ma_toa:
 	jnz	.l3
 
 .rt:	pop	rax
+	ret
+
+
+ma_xorshift64:
+	mov	rax, [rdi]
+	mov	rcx, rax
+	shl	rax, 13
+	xor	rax, rcx
+	mov	rcx, rax
+	shr	rax, 7
+	xor	rax, rcx
+	mov	rcx, rax
+	shl	rax, 17
+	xor	rax, rcx
+.rt:	mov	[rdi], rax
 	ret

@@ -34,6 +34,20 @@ extern ma_strlen
 ;
 extern ma_toa
 
+
+; Xorshift PRNG by G.Marsaglia.
+;
+; Marsaglia, G. (2003). Xorshift RNGs.
+; Journal of Statistical Software, 8(14), 1–6.
+; https://doi.org/10.18637/jss.v008.i14
+;
+; Parameters:
+;	rdi	- state (nonzero)
+; Returns:
+;	rax	- pseudorandom 64 bit unsigned integer
+;
+extern ma_xorshift64
+
 %endif ; MALIB_API
 
 %ifndef MALIB_CONSTS

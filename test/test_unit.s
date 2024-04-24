@@ -30,6 +30,7 @@ SECTION .text
 _start:
 	call	test_strlen
 	call	test_toa
+	call	test_xorshift64
 
 _exit:
 	mov	rax, SYS_EXIT
@@ -106,4 +107,28 @@ test_toa:
 	case_toa	4, 0x0014
 	case_toa	5, 0x0015
 
+	ret
+
+
+test_xorshift64:
+	push	rbp
+	mov	rbp, rsp
+%define state	[rbp-8]
+	push	qword 1111		; seed/state
+
+	mov	rcx, 0x40
+.lp:	push	rcx			; generate 64 random numbers
+	lea	rdi, state
+	call	ma_xorshift64
+	pop	rcx
+	loop	.lp
+
+	mov	rdx, 0xc20dae4994e35988	; check the last number generated
+	cmp	rax, rdx		; (cmp takes only 32bit immidiates)
+	je	.rt
+	mov	rdi, 0x0020
+	call	_test_fail
+
+.rt:	mov	rsp, rbp
+	pop	rbp
 	ret
