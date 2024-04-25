@@ -1,6 +1,14 @@
 %ifndef MALIB_API
 %define MALIB_API
 
+; Get the value of the current thread's clock.
+;
+; Parameters:
+;	[none]
+; Returns:
+;	rax	- calling thread's current time in nanoseconds
+extern ma_clock
+
 ; Print a null-terminated string to file destriptor.
 ;
 ; Parameters:

@@ -1,5 +1,6 @@
 %include "malib_int.inc"
 %define MALIB_API
+global		ma_clock
 global		ma_print
 global		ma_strlen
 global		ma_toa
@@ -13,6 +14,22 @@ SECTION .data
 SECTION .bss
 
 SECTION .text
+
+ma_clock:
+	sub	rsp, 16
+
+	mov	rax, SYS_CLOCK_GETTIME
+	mov	rdi, 3			; CLOCK_THREAD_CPUTIME_ID
+	lea	rsi, -16[rsp]		; struct timespec *tp
+	syscall
+
+	mov	rax, -16[rsp]		; seconds
+	mov	rcx, 1000000000
+	mul	rcx
+	add	rax, -8[rsp]		; nanos
+
+.rt:	add	rsp, 16
+	ret
 
 ma_print:
 	push	rdi			; calculate string length

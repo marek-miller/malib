@@ -18,6 +18,15 @@ static char *TEST_STR00 = "";
 static char *TEST_STR01 = "Hello, malib!";
 static char *TEST_STR02 = "huqmkvello, maioal";
 
+void test_clock()
+{
+	uint64_t t1, t2;
+	t1 = ma_clock();
+	t2 = ma_clock();
+	if (t2 < t1)
+		TEST_FAIL("thread time should be monotonous")
+}
+
 void test_strlen()
 {
 	if (ma_strlen(TEST_STR00) != 0)
@@ -92,6 +101,7 @@ int main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 
+	test_clock();
 	test_strlen();
 	test_toa();
 	test_xorshift64();

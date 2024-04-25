@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+uint64_t ma_clock(void);
+
 size_t ma_strlen(char *);
 
 void ma_print(int fd, char *);

@@ -28,6 +28,7 @@ SECTION .bss
 SECTION .text
 
 _start:
+	call	test_clock
 	call	test_strlen
 	call	test_toa
 	call	test_xorshift64
@@ -55,6 +56,38 @@ _test_fail:
         mov	[TEST_RT], al
 	ret
 
+test_clock:
+%define STEPS 64
+	push	r12
+	push	rbp
+	mov	rbp, rsp
+	sub	rsp, 8*STEPS
+
+	; populate an array with STEPS calls to ma_clock
+	mov	r12, rsp
+.l1:	call	ma_clock
+	mov	[r12], rax
+	add	r12, 8
+	cmp	r12, rbp
+	jne	.l1
+
+	; check if results increose monotonously
+	mov	rcx, STEPS
+.l2:	dec	rcx
+	jz	.rt
+	lea	rdi, 8[rsp]
+	lea	rsi, [rsp]
+	cmpsq
+	jb	.l2
+.fail:	lea	rdi, [rcx + 0x0700]
+	call	_test_fail
+
+.rt:	mov	rsp, rbp
+	pop	rbp
+	pop	r12
+	ret
+
+
 test_strlen:
 %macro case_strlen 3
 	lea	rdi, [%1]
@@ -71,6 +104,7 @@ test_strlen:
 	case_strlen	str03, 0x0c, 0x0002
 
 	ret
+
 
 test_toa:
 	lea 	rdi, [toa_buf]
