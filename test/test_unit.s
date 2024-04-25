@@ -77,25 +77,24 @@ test_toa:
 
 %macro case_toa 2
 	mov	rax,  '________'	; clear the buffer
-	mov	qword [rdi], rax
-	mov	qword [rdi+8], rax
+	mov	[rdi], rax
+	mov	8[rdi], rax
 
 	push	rdi			; call ma_toa
-	mov	rsi, qword [toa_int + 8*%1]
-	mov	rdx, qword [toa_len + 8*%1]
+	mov	rsi, 8*%1[toa_int]
+	mov	rdx, 8*%1[toa_len]
 	call	ma_toa
 	pop	rdi
 
-	xor	cx, cx			; compare result (16 digits)
-	mov	rax, [toa_exp + 16*%1]
+	; compare result (16 digits)
+	mov	rax, 16*%1[toa_exp]
 	cmp	[rdi], rax
-	setne	cl
-	mov	rax, [toa_exp + 16*%1 + 8]
-	cmp	[rdi+8], rax
-	setne	ch
-	or	cl, ch
-	jz	%%.rt
-
+	jne	%%.fail
+	mov	rax, (16*%1 + 8)[toa_exp]
+	cmp	8[rdi], rax
+	jne	%%.fail
+	jmp	%%.rt
+%%.fail:
 	push	rdi
 	mov	rdi, %2
 	call	_test_fail
@@ -124,10 +123,10 @@ test_xorshift64:
 
 	lea	r13, -8[rbp]
 	mov	r12, 64
-.lp:	mov	rdi, r13
+.l1:	mov	rdi, r13
 	call	ma_xorshift64
 	dec	r12
-	jnz	.lp
+	jnz	.l1
 
 	mov	rdx, 0xc20dae4994e35988	; check the last number generated
 	cmp	rax, rdx		; (cmp takes only 32bit immidiates)
