@@ -48,11 +48,11 @@ ma_print:
 
 ma_strlen:
 	xor	rax, rax
-	mov	rcx, -1			; set the counter to max value,
-	repne 	scasb			;  repeat until \0 character found
-	add	rcx, 2			; rcx = -#steps-2
-
-.rt:	sub	rax, rcx
+	mov	rdx, rdi
+.l1:	scasb				; repeat until \0 found
+	jne	.l1
+	sub	rdi, rdx
+	lea	rax, [rdi - 1]
 	ret
 
 
@@ -64,13 +64,12 @@ ma_toa:
 	mov	 r8, '01234567'		; lookup table
 	mov	 r9, '89abcdef'
 
-	xor	rax, rax		; check if rdx is greater than 16
-	mov	al, '0'			; for larger values we print zeros
-.l0:	cmp	rdx, 16
-	jbe	.l1
-	stosb
-	dec	rdx
-	jmp	.l0
+	mov	rcx, rdx		; check if rdx is greater than 16
+	sub	rcx, 16			; print zeros for larger values
+	js	.l1
+	sub 	rdx, rcx
+	mov	rax, '0'
+	rep	stosb
 
 .l1:	mov	rcx, rdx		; rotate rsi, each digit is 4 bits
 	shl	 cl, 2
