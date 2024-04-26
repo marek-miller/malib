@@ -1,3 +1,16 @@
+%ifndef MALIB_CONSTS
+%define MALIB_CONSTS
+
+%define	EXIT_SUCCESS	0
+%define	EXIT_FAILURE	255
+
+%define	STDIN		0
+%define	STDOUT		1
+%define	STDERR		2
+
+%endif ; MALIB_CONSTS
+
+
 %ifndef MALIB_API
 %define MALIB_API
 
@@ -58,15 +71,3 @@ extern ma_toa
 extern ma_xorshift64
 
 %endif ; MALIB_API
-
-%ifndef MALIB_CONSTS
-%define MALIB_CONSTS
-
-%define	EXIT_SUCCESS	0
-%define	EXIT_FAILURE	255
-
-%define	STDIN		0
-%define	STDOUT		1
-%define	STDERR		2
-
-%endif ; MALIB_CONSTS

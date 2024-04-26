@@ -31,6 +31,7 @@ ma_clock:
 .rt:	add	rsp, 16
 	ret
 
+
 ma_print:
 	push	rdi			; calculate string length
 	mov	rdi, rsi
@@ -78,11 +79,11 @@ ma_toa:
 .l2:	rol	rsi, 4
 	mov	rcx, rsi
 	and	 cl, 0x0f		; extract digit, we don'n need it to
-	mov	rax, r8			;  clear it from rsi since rdx < 16
+	mov	rax, r8			;  clear it from rsi since rdx <= 16
 	cmp	 cl, 8			; if the digit is greater than 8,
 	cmovge	rax, r9			;  we use 2nd half of the lookup table
-	and	 cl, 0xf7		;  and subtract 8
-	shl	 cl, 3			; each ascii sign is 8 bits
+	and	 cl, 0xf7		;  and subtract 8 in that case
+	shl	 cl, 3			; each ASCII sign is 8 bits
 	shr	rax, cl
 	stosb
 	dec	rdx
